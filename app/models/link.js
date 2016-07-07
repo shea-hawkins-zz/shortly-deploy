@@ -30,9 +30,6 @@ module.exports = {
           err ? reject(err) : resolve(link);
         });
       });
-    })
-    .catch(function(err) {
-      console.log(err);
     });
   },
   fetch: function() {
@@ -45,6 +42,13 @@ module.exports = {
 
   },
   getUrl: function(code) {}, //returns false if doesn't exist else url
+  getLink: function(url) {
+    return new Promise(function(resolve, reject) {
+      Link.findOne({url: url}, '', function(err, link) {
+        err ? reject(err) : resolve(link);
+      });
+    });
+  },
   click: function(code) {},
 
 };
