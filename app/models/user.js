@@ -43,5 +43,8 @@ module.exports = {
   }, 
   hashPassword: function(password) {
     return cipher(password, null, null);
+  },
+  remove: function(condition) {
+    User.remove(condition).exec();
   }
 };

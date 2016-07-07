@@ -68,4 +68,7 @@ module.exports = {
       });
     });
   },
+  remove: function(condition) {
+    Link.remove(condition).exec();
+  }
 };
