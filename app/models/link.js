@@ -62,7 +62,6 @@ module.exports = {
   click: function(link) {
     return new Promise(function(resolve, reject) {
       Link.findOne({ url: link.url }, '', function(err, link) {
-        console.log(link);
         link.visits++;
         link.save();
       });

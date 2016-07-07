@@ -40,7 +40,14 @@ module.exports = {
         return false;
       }
     });
-  }, 
+  },
+  findOne: function(conditions) {
+    return new Promise(function(resolve, reject) {
+      User.findOne(conditions).then(function(foundUser) {
+        foundUser ? resolve(foundUser) : reject(foundUser);
+      });
+    });
+  },
   hashPassword: function(password) {
     return cipher(password, null, null);
   },

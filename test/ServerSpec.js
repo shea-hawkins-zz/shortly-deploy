@@ -12,7 +12,7 @@ var db = require('../app/config');
 var User = require('../app/models/user');
 var Link = require('../app/models/link');
 describe('', function() {
-
+  this.timeout(5000);
   beforeEach(function(done) {
     // Log out currently signed in user
     request(app)
@@ -61,9 +61,8 @@ describe('', function() {
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url': 'http://www.roflzoo.com/'})
-              .exec(function(err, link) {
-                if (err) { console.log(err); }
+            Link.getLinkFromUrl('http://www.roflzoo.com/')
+              .then(function(link) {
                 expect(link.url).to.equal('http://www.roflzoo.com/');
               });
           })
@@ -77,9 +76,8 @@ describe('', function() {
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url': 'http://www.roflzoo.com/'})
-              .exec(function(err, link) {
-                if (err) { console.log(err); }
+            Link.getLinkFromUrl('http://www.roflzoo.com/')
+              .then(function(link) {
                 expect(link.title).to.equal('Funny pictures of animals, funny dog pictures');
               });
           })
@@ -91,16 +89,11 @@ describe('', function() {
     describe('With previously saved urls: ', function() {
 
       beforeEach(function(done) {
-        link = new Link({
-          url: 'http://www.roflzoo.com/',
-          title: 'Funny pictures of animals, funny dog pictures',
-          baseUrl: 'http://127.0.0.1:4568',
-          visits: 0
-        });
-
-        link.save(function() {
-          done();
-        });
+        Link.create('http://www.roflzoo.com/')
+          .then(function(resp) {
+            link = resp;
+            done();
+          });
       });
 
       it('Returns the same shortened code if attempted to add the same URL twice', function(done) {
@@ -175,14 +168,13 @@ describe('', function() {
       request(app)
         .post('/signup')
         .send({
-          'username': 'Svnh',
+          'username': 'Svnh2',
           'password': 'Svnh' })
         .expect(302)
-        .expect(function() {
-          User.findOne({'username': 'Svnh'})
-            .exec(function(err, user) {
-              expect(user.username).to.equal('Svnh');
-            });
+        .expect(function(res) {
+          User.findOne({username: 'Svnh2'}).then(function(user) {
+            expect(user.username).to.equal('Svnh2');
+          });
         })
         .end(done);
     });
@@ -208,10 +200,7 @@ describe('', function() {
   describe('Account Login:', function() {
 
     beforeEach(function(done) {
-      new User({
-        'username': 'Phillip',
-        'password': 'Phillip'
-      }).save(function() {
+      User.create('Phillip', 'Phillip').then(function(user) {
         done();
       });
     });
