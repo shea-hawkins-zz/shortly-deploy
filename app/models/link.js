@@ -34,9 +34,17 @@ module.exports = {
     .catch(function(err) {
       console.log(err);
     });
-  }
-};
+  },
+  fetch: function() {
+    return new Promise(function(resolve, reject) {
+      Link.find({}, '', function(err, links) {
+        console.log(links);
+        err ? reject(err) : resolve(links);
+      });
+    });
 
-module.exports.create('http://facebook.com').then(function(link) {
-  console.log(link);
-});
+  },
+  getUrl: function(code) {}, //returns false if doesn't exist else url
+  click: function(code) {},
+
+};
