@@ -21,7 +21,7 @@ module.exports = {
       });
     });
   },
-  validateUser: function(username, password) {
+  validate: function(username, password) {
     var user;
     return new Promise(function(resolve, reject) {
       User.findOne({ username: username }, 'username password', function(err, user) {
@@ -30,11 +30,15 @@ module.exports = {
     })
     .then(function(result) {
       user = result;
-      return new Promise(function(resolve, reject) {
-        bcrypt.compare(password, user.password, function(err, result) {
-          err ? reject(err) : resolve(result);          
+      if (user) {
+        return new Promise(function(resolve, reject) {
+          bcrypt.compare(password, user.password, function(err, result) {
+            err ? reject(err) : resolve(result);          
+          });
         });
-      });
+      } else {
+        return false;
+      }
     });
   }, 
   hashPassword: function(password) {

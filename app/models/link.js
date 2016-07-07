@@ -35,20 +35,37 @@ module.exports = {
   fetch: function() {
     return new Promise(function(resolve, reject) {
       Link.find({}, '', function(err, links) {
-        console.log(links);
         err ? reject(err) : resolve(links);
       });
     });
 
   },
-  getUrl: function(code) {}, //returns false if doesn't exist else url
-  getLink: function(url) {
+  getLinkFromCode: function(code) {
+    return new Promise(function(resolve, reject) {
+      Link.findOne({code: code }, 'url', function(err, link) {
+        err ? reject(err) : resolve(link);
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    });
+
+
+  }, //returns false if doesn't exist else url
+  getLinkFromUrl: function(url) {
     return new Promise(function(resolve, reject) {
       Link.findOne({url: url}, '', function(err, link) {
         err ? reject(err) : resolve(link);
       });
     });
   },
-  click: function(code) {},
-
+  click: function(link) {
+    return new Promise(function(resolve, reject) {
+      Link.findOne({ url: link.url }, '', function(err, link) {
+        console.log(link);
+        link.visits++;
+        link.save();
+      });
+    });
+  },
 };
