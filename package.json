@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=prod nodemon server.js",
+    "start:prod": "PORT=80 nodemon server.js",
     "test": "grunt test",
     "lint": "eslint ./"
   },
